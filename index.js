@@ -140,11 +140,12 @@ class Graph {
             for (let i = 0; i < sides; i++) {
                 coordinates.push({
                     x: x + (Math.sin(2 * Math.PI * i / sides) * radius),
-                    y: y - (Math.cos(2 * Math.PI * i / sides) * radius),
+                    y: y - 0.3 * (Math.cos(2 * Math.PI * i / sides) * radius),
                 });
             }
         }
         return coordinates;
+        console.log('${coordinates}');120
     }
 
     prepareSimulation() {
@@ -201,7 +202,43 @@ class Graph {
             this.simulation.tick();
         }
         // this.simulation.restart();
-
+        
+        this.fill1 = this.root.append("pattern")
+            .attr("id","fill-primary")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 1)
+            .attr("height", 1)
+            .append("image")
+            .attr("preserveAspectRatio", "none")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 30)
+            .attr("height", 18)
+            .attr("xlink:href", "sketchy.png")
+        
+        this.fill2 = this.root.append("pattern")
+            .attr("id","fill-secondary")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 1)
+            .attr("height", 1)
+            .append("image")
+            .attr("preserveAspectRatio", "none")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 16)
+            .attr("height", 10)
+            .attr("xlink:href", "secondary-sketchy.png")
+        
+        this.links = this.root.append("g")
+            .attr("id","wireframes")
+            .attr("fill","#ffffff")
+            .attr("opacity",0.6)
+            .attr("stroke","grey")
+            .append("polygon")
+            .attr("points", "750,150 1300,420 750,690 200,420");
+        
         this.links = this.root.append("g")
             .attr("class", "links")
             .selectAll("line")
@@ -216,11 +253,12 @@ class Graph {
         this.foci = this.root.append("g")
             .attr("class", "foci")
             .style("opacity", 0)
-            .selectAll("circle")
+            .selectAll("ellipse")
             .data(Object.values(this.primaryConcepts))
             .enter()
-            .append("circle")
-            .attr("r", 10)
+            .append("ellipse")
+            .attr("rx", 15)
+            .attr("rx", 8)
             .attr('cx', function (datum) {
                 return datum.focusCoordinates.x;
             })
@@ -240,11 +278,16 @@ class Graph {
             })
             .attr("transform", function (d) { return `translate(${d.x}, ${d.y})`; });
 
-        this.nodes.append("circle")
-            .attr("r", function (datum) {
-                return self.primaryConcepts.hasOwnProperty(datum.cId) ? 10 : 5;
+        this.nodes.append("ellipse")
+            .attr("rx", function (datum) {
+                return self.primaryConcepts.hasOwnProperty(datum.cId) ? 15 : 8;
+        })
+             .attr("ry", function (datum) {
+                return self.primaryConcepts.hasOwnProperty(datum.cId) ? 9 : 5;
+            })
+            .attr("fill", function (datum) {
+                return self.primaryConcepts.hasOwnProperty(datum.cId) ? "url(#fill-primary)" : "url(#fill-secondary)";
             });
-
         this.nodes.append("text")
             .attr("dx", function (datum, i) {
                 return self.primaryConcepts.hasOwnProperty(datum.cId) ? 15 : 10;
@@ -306,10 +349,10 @@ document.getElementById("3d-toggle")
             graph2.style.opacity = 0;
             graphElement.parentNode.appendChild(graph2);
             setTimeout(function () {
-                graph2.style.transform = `rotateX(45deg) scale(0.5) translateZ(-${100 * cloneCount}px)`;
+                graph2.style.transform = `translateY(-${150 * cloneCount}px) scale(0.7)`;
                 graph2.style.opacity = 1;
                 cloneCount++;
-                if (cloneCount < 5) {
+                if (cloneCount < 4) {
                     clone();
                 }
             }, 50);
