@@ -14,6 +14,7 @@ const width = window.innerWidth * 0.9,
         "215865868473ecf27745ea7e0f56ed04", // Barack Obama
     ];
 
+
 class Graph {
     constructor() {
         this.nodeData = [];
@@ -72,8 +73,8 @@ class Graph {
 
         const primaryConceptCount = Object.keys(this.primaryConcepts).length;
 
-        console.log(primaryConceptCount, rawNodeData.length, rawEdgeData.length);
-
+        console.log(primaryConceptCount, rawNodeData.length, rawEdgeData.length, width);
+        
         const nodeMapping = {},
             vertexCoordinates = Graph.polygonVertexCoordinatesFrom(
                 width / 2,
@@ -134,6 +135,8 @@ class Graph {
      */
     static polygonVertexCoordinatesFrom(x, y, radius, sides) {
         const coordinates = [];
+        x = 750;
+        y = 550;
         if (sides === 1) {
             coordinates.push({x, y});
         } else {
@@ -145,7 +148,6 @@ class Graph {
             }
         }
         return coordinates;
-        console.log('${coordinates}');120
     }
 
     prepareSimulation() {
@@ -237,7 +239,7 @@ class Graph {
             .attr("opacity",0.6)
             .attr("stroke","grey")
             .append("polygon")
-            .attr("points", "750,150 1300,420 750,690 200,420");
+            .attr("points", "750,250 1350,550 750,850 150,550");
         
         this.links = this.root.append("g")
             .attr("class", "links")
@@ -349,7 +351,7 @@ document.getElementById("3d-toggle")
             graph2.style.opacity = 0;
             graphElement.parentNode.appendChild(graph2);
             setTimeout(function () {
-                graph2.style.transform = `translateY(-${150 * cloneCount}px) scale(0.7)`;
+                graph2.style.transform = `translateY(-${180 * cloneCount}px) scale(0.8)`;
                 graph2.style.opacity = 1;
                 cloneCount++;
                 if (cloneCount < 4) {
